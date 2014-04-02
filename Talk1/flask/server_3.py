@@ -10,13 +10,16 @@ login_manager.init_app(app)
 
 User = {"sean": "beans", "joe": "potatoes"}
 
+@app.before_request
+def set_user():
+    flask.g.user = login.current_user
+
 @login_manager.user_loader
 def load_user(userid):
     return user.User(userid)
 
 @app.route("/")
 def home():
-    flask.g.user = login.current_user
     return flask.render_template("home.html")
 
 

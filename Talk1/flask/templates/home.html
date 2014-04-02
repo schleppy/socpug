@@ -1,8 +1,4 @@
+{% extends "layout.html" %}
+{% block content %}
 Welcome to my site {%- if g.user.is_authenticated() %}, {{ g.user.name }}{% endif %}<br><br>
-
-{% if g.user.is_authenticated() %}
-  <a href="/secret">Secret Stuff</a><br>
-  <a href="/logout">Logout</a>
-{% else %}
-  <a href="/login">Login</a>
-{% endif %}
+{% endblock %}
