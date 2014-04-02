@@ -14,15 +14,17 @@ class UsersAPI(MethodView):
 
     def get(self, _id=None):
         if _id:
-            return flask.jsonify(user=user.User.query.get(_id).to_json())
+            return flask.jsonify(user.User.query.get(_id).to_json())
         return flask.jsonify(users=[u.to_json() for u in user.User.query.all()])
 
     def post(self):
         new_user = user.User.from_json(flask.request.json)
         db_session.add(new_user)
-        db_session.commit()
-        response = flask.make_response("Success", 201)
-        return response
+        try:
+            db_session.commit()
+        except:
+            raise Exception("Insert failed")
+        return flask.jsonify(new_user.to_json()), 201
 
     def delete(self, _id):
         u = user.User.query.get(_id)
@@ -35,7 +37,7 @@ class UsersAPI(MethodView):
         if u:
             u.update(flask.request.json)
             db_session.commit()
-            return flask.make_response("Success", 200)
+            return flask.jsonify(u.to_json())
         else:
             return self.post()
 

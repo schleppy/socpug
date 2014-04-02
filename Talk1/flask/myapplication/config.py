@@ -2,4 +2,4 @@ APP_NAME = "myapplication"
 SESSION_COOKIE_NAME = "login_app"
 SECRET_KEY = "0cc175b9c0f1b6a831c399e269772661"
 BLUEPRINTS_DIRECTORY = "views"
-#DEBUG = True
+DEBUG = False
