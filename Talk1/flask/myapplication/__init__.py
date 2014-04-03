@@ -2,6 +2,9 @@ import os
 import importlib
 import flask
 from werkzeug.routing import BaseConverter
+from sqlalchemy import exc
+from werkzeug.exceptions import default_exceptions
+from werkzeug.exceptions import HTTPException
 
 class RegexConverter(BaseConverter):
     """
@@ -34,3 +37,21 @@ def load_blueprints():
             print "Adding blueprint for {}".format(endpoint)
             APP.register_blueprint(module.app, url_prefix="/{}".format(endpoint.split(".")[-1]))
 
+
+def make_json_app(APP):
+    def make_json_error(ex):
+        if isinstance(ex, exc.SQLAlchemyError):
+            message = str(ex.__class__)
+        else:
+            message = str(ex)
+        print str(ex)
+        response = flask.jsonify(message=message)
+        response.status_code = (ex.code
+                                if isinstance(ex, HTTPException)
+                                else 500)
+        return response
+
+    for code in default_exceptions.iterkeys():
+        APP.error_handler_spec[None][code] = make_json_error
+
+    return APP

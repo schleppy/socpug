@@ -28,7 +28,7 @@ class UsersAPI(MethodView):
 
     def delete(self, _id):
         u = user.User.query.get(_id)
-        db_session.delete(w)
+        db_session.delete(u)
         db_session.commit()
         return flask.make_response("Deleted", 204)
 
@@ -39,7 +39,25 @@ class UsersAPI(MethodView):
             db_session.commit()
             return flask.jsonify(u.to_json())
         else:
-            return self.post()
+            u = user.User.from_json(flask.request.json)
+            u.id = _id
+            db_session.add(u)
+            db_session.commit()
+            return flask.jsonify(u.to_json())
+
+    def patch(self, _id):
+        print "RUNNING PATCH..."
+        u = user.User.query.get(_id)
+        if not u:
+            return "Missing", 404
+        print flask.request.json
+        print u.__dict__
+        print _id
+        u.update(flask.request.json)
+        db_session.commit()
+        return flask.jsonify(u.to_json())
+
+
 
 
 views.register_api(app, UsersAPI, bp_name, '/', pk='_id')

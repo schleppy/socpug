@@ -13,7 +13,7 @@ def list_widgets():
         new_widget = widget.Widget.from_json(flask.request.json)
         db_session.add(new_widget)
         db_session.commit()
-        response = flask.make_response("Success", 201)
+        response = flask.jsonify(new_widget.to_json()), 201
         return response
 
 @app.route("/<int:_id>", methods=("PUT", "DELETE", "GET"))
@@ -35,13 +35,8 @@ def put_or_delete_widget(_id):
         if w:
             db_session.delete(w)
             db_session.commit()
-            return flask.make_response("Deleted", 402)
+            return flask.make_response("Deleted", 204)
         else:
             return flask.make_response("Missing", 404)
     else:
         return flask.jsonify(widget=widget.Widget.query.get(_id).to_json())
-
-
-
-if __name__ == "__main__":
-    app.run('', 8090)
