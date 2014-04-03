@@ -44,6 +44,7 @@ def sercret():
 @login.login_required
 def logout():
     login.logout_user()
+    flask.flash("You have been logged out.")
     return flask.redirect(flask.url_for("home"))
 
 if __name__ == "__main__":
