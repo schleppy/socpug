@@ -46,13 +46,9 @@ class UsersAPI(MethodView):
             return flask.jsonify(u.to_json())
 
     def patch(self, _id):
-        print "RUNNING PATCH..."
         u = user.User.query.get(_id)
         if not u:
             return "Missing", 404
-        print flask.request.json
-        print u.__dict__
-        print _id
         u.update(flask.request.json)
         db_session.commit()
         return flask.jsonify(u.to_json())
